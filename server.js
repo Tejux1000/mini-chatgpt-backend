@@ -11,11 +11,11 @@ app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
-    const apiRes = await fetch("https://mini-chatgpt-backend.onrender.com", {
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer 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`
+        "Authorization": `Bearer ${process.env.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}`
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -23,13 +23,12 @@ app.post("/chat", async (req, res) => {
       })
     });
 
-    const data = await apiRes.json();
+    const data = await openaiRes.json();
     res.json({ reply: data.choices[0].message.content });
   } catch (err) {
-    res.status(500).json({ reply: "Server error" });
+    res.status(500).json({ reply: "Error: " + err.message });
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server running");
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
